@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satış Dosyası · Satılık Daire (Kredisiz)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101418;
+    --panel:#1a2028;
+    --panel2:#151a21;
+    --line:#2a3340;
+    --ink:#e8e2d5;
+    --ink-dim:#9aa4ae;
+    --label:#7d8a99;
+    --bordo:#c04b5d;
+    --bordo-deep:#8f3341;
+    --done:#5fae7f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    line-height:1.55;
+    padding:24px 16px 80px;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+
+  /* ---------- DOSYA KAPAĞI ---------- */
+  .cover{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:4px solid var(--bordo);
+    border-radius:6px;
+    padding:26px 24px 22px;
+    position:relative;
+  }
+  .cover .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--bordo);
+  }
+  .cover h1{
+    font-family:'IBM Plex Serif',serif;
+    font-weight:600;font-size:clamp(22px,4.5vw,30px);
+    margin:6px 0 2px;
+  }
+  .cover .sub{
+    font-family:'IBM Plex Serif',serif;font-style:italic;
+    color:var(--ink-dim);font-size:14px;
+  }
+  .fields{
+    margin-top:20px;
+    display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;
+  }
+  @media(max-width:560px){.fields{grid-template-columns:1fr}}
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--label);margin-bottom:4px;
+  }
+  .field input{
+    width:100%;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:14px;
+    padding:8px 10px;
+  }
+  .field input:focus{outline:2px solid var(--bordo);outline-offset:1px;border-color:var(--bordo)}
+
+  /* ---------- İLERLEME ---------- */
+  .progress{
+    margin:22px 0 30px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px 20px;
+  }
+  .progress .row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--label);
+    margin-bottom:9px;
+  }
+  .progress .pct{color:var(--ink);font-size:16px;font-weight:600}
+  .bar{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--bordo-deep),var(--bordo));transition:width .35s ease}
+
+  /* ---------- AŞAMALAR ---------- */
+  .phase{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    margin-bottom:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .phase-head{
+    width:100%;text-align:left;
+    background:none;border:none;cursor:pointer;
+    padding:16px 60px 16px 20px;
+    display:flex;align-items:baseline;gap:14px;
+    color:var(--ink);
+  }
+  .phase-head:focus-visible{outline:2px solid var(--bordo);outline-offset:-2px}
+  .phase-no{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--bordo);
+    letter-spacing:.1em;flex-shrink:0;
+    border:1px solid var(--bordo-deep);
+    border-radius:3px;padding:2px 7px;
+  }
+  .phase-title{
+    font-family:'IBM Plex Serif',serif;
+    font-weight:600;font-size:17px;flex:1;
+  }
+  .phase-count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--label);flex-shrink:0;
+  }
+  .chev{
+    position:absolute;right:20px;top:19px;
+    width:10px;height:10px;
+    border-right:2px solid var(--label);
+    border-bottom:2px solid var(--label);
+    transform:rotate(45deg);
+    transition:transform .25s;
+  }
+  .phase.open .chev{transform:rotate(225deg);top:23px}
+  .phase-body{display:none;padding:2px 20px 18px;border-top:1px dashed var(--line)}
+  .phase.open .phase-body{display:block}
+
+  /* ---------- MADDELER ---------- */
+  .item{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:11px 0;
+    border-bottom:1px solid rgba(42,51,64,.5);
+  }
+  .item:last-child{border-bottom:none}
+  .item input[type=checkbox]{
+    appearance:none;-webkit-appearance:none;
+    width:19px;height:19px;flex-shrink:0;margin-top:2px;
+    background:var(--panel2);
+    border:1.5px solid var(--label);
+    border-radius:4px;cursor:pointer;position:relative;
+  }
+  .item input[type=checkbox]:focus-visible{outline:2px solid var(--bordo);outline-offset:2px}
+  .item input[type=checkbox]:checked{background:var(--bordo);border-color:var(--bordo)}
+  .item input[type=checkbox]:checked::after{
+    content:"";position:absolute;left:5px;top:1px;
+    width:5px;height:10px;
+    border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;
+    transform:rotate(45deg);
+  }
+  .item .txt{cursor:pointer;user-select:none}
+  .item .t{font-size:14.5px;font-weight:500}
+  .item .h{font-size:12.5px;color:var(--ink-dim);margin-top:2px}
+  .item input:checked ~ .txt .t{color:var(--label);text-decoration:line-through;text-decoration-color:var(--bordo-deep)}
+
+  /* ---------- KAŞE ---------- */
+  .stamp{
+    position:absolute;right:52px;top:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;font-weight:600;
+    letter-spacing:.28em;text-transform:uppercase;
+    color:var(--done);
+    border:2px double var(--done);
+    border-radius:4px;
+    padding:4px 10px 4px 12px;
+    transform:rotate(-8deg) scale(0);
+    opacity:0;
+    transition:transform .3s cubic-bezier(.2,1.6,.4,1),opacity .2s;
+    pointer-events:none;
+  }
+  .phase.done .stamp{transform:rotate(-8deg) scale(1);opacity:.92}
+  .phase.done{border-color:rgba(95,174,127,.45)}
+
+  /* ---------- ARAÇLAR ---------- */
+  .tools{
+    margin-top:28px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px 20px;
+  }
+  .tools h2{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--label);font-weight:500;margin-bottom:12px;
+  }
+  .tools p{font-size:12.5px;color:var(--ink-dim);margin-bottom:12px}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+  button.act{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.08em;
+    background:var(--panel2);
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:9px 16px;cursor:pointer;
+  }
+  button.act:hover{border-color:var(--bordo);color:#fff}
+  button.act:focus-visible{outline:2px solid var(--bordo);outline-offset:2px}
+  button.act.danger:hover{border-color:var(--bordo);background:var(--bordo-deep)}
+  .tools textarea{
+    width:100%;margin-top:12px;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    padding:10px;min-height:64px;resize:vertical;
+  }
+  .tools textarea:focus{outline:2px solid var(--bordo);outline-offset:1px}
+  .msg{font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:8px;color:var(--done);min-height:16px}
+
+  footer{
+    margin-top:26px;text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--label);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- DOSYA KAPAĞI -->
+  <div class="cover">
+    <div class="eyebrow">Saha Kiti · İşlem Dosyası No. 01</div>
+    <h1>Satılık Daire — Bürokrasi Kontrol Listesi</h1>
+    <div class="sub">Kredisiz (peşin) satış akışı · portföyden teslime 8 aşama</div>
+    <div class="fields">
+      <div class="field"><label for="f-portfoy">Portföy No</label><input id="f-portfoy" data-k="portfoy" placeholder="örn. 2026-014"></div>
+      <div class="field"><label for="f-malik">Mülk Sahibi</label><input id="f-malik" data-k="malik" placeholder="Ad Soyad"></div>
+      <div class="field"><label for="f-adaparsel">Ada / Parsel</label><input id="f-adaparsel" data-k="adaparsel" placeholder="örn. 1234 / 5"></div>
+      <div class="field"><label for="f-adres">Adres</label><input id="f-adres" data-k="adres" placeholder="Mahalle, sokak"></div>
+      <div class="field"><label for="f-fiyat">Anlaşılan Bedel</label><input id="f-fiyat" data-k="fiyat" placeholder="₺"></div>
+      <div class="field"><label for="f-tapugun">Tapu Günü</label><input id="f-tapugun" data-k="tapugun" placeholder="GG.AA.YYYY"></div>
+    </div>
+  </div>
+
+  <!-- İLERLEME -->
+  <div class="progress">
+    <div class="row"><span>Dosya Durumu</span><span class="pct" id="pct">%0</span></div>
+    <div class="bar"><i id="barfill"></i></div>
+  </div>
+
+  <!-- AŞAMALAR -->
+  <div id="phases"></div>
+
+  <!-- ARAÇLAR -->
+  <div class="tools">
+    <h2>Dosya Araçları</h2>
+    <p>Bu sayfa durumu tarayıcıda saklamaz. Kapatmadan önce <strong>Durum Kodu Al</strong> ile kodu kopyalayıp not defterine yapıştır; döndüğünde koda yapıştırıp <strong>Kodu Yükle</strong> de.</p>
+    <div class="btnrow">
+      <button class="act" id="btn-export">Durum Kodu Al</button>
+      <button class="act" id="btn-import">Kodu Yükle</button>
+      <button class="act" id="btn-openall">Tümünü Aç / Kapat</button>
+      <button class="act danger" id="btn-reset">Dosyayı Sıfırla</button>
+    </div>
+    <textarea id="statebox" placeholder="Durum kodu burada görünür / buraya yapıştırılır" aria-label="Durum kodu"></textarea>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <footer>Saha Kiti · Ders 1–4 temelli · Kredili / kira / arsa dosyaları eklenecek</footer>
+</div>
+
+<script>
+const DATA = [
+  { no:"01", title:"Portföye Alma", items:[
+    ["Tapu fotokopisi / fotoğrafı alındı",""],
+    ["Satmaya yetkili kişi doğrulandı","Konuşulan kişi malik mi? Değilse noter vekâleti şart."],
+    ["Vekâlet varsa 'satış yetkisi' ibaresi kontrol edildi","Genel vekâlet her zaman satışa yetmez."],
+    ["Tapu 6'lı kontrolü yapıldı","Nitelik · kat mülkiyeti/irtifakı · hisse · edinme sebebi · arsa payı · takyidat"],
+    ["Takyidat çekildi","Haciz / tedbir / ipotek / şerh var mı? Tedbir = dur, bekle."],
+    ["Hisseliyse tüm hissedarların rızası teyit edildi","Elbirliği (iştirak) ise önce paylı mülkiyete geçiş gerekir."],
+    ["Ev gezildi, bilgi formu dolduruldu","m², oda, kat, aidat, ısınma, cephe."],
+    ["Yetkilendirme sözleşmesi imzalandı","Yazılı, azami 3 ay. Bitiş tarihini ajandaya not et."]
+  ]},
+  { no:"02", title:"Fiyat Belirleme", items:[
+    ["Emsal araştırması yapıldı","Son 3-6 ayda satılmışlar + halen ilandakiler. Kıdemlilere sor: 'bu sitede en son kaça satıldı?'"],
+    ["m² birim fiyatı hesaplandı, farklar düzeltildi","Kat, cephe, tadilat, iskân durumu."],
+    ["Mülk sahibiyle gerçekçi fiyat bandı anlaşıldı","Pahalı ilan = ölü ilan. İlk 2 haftayı şişik fiyatla harcama."]
+  ]},
+  { no:"03", title:"İlan & EİDS", items:[
+    ["Mülk sahibi e-Devlet'ten EİDS yetkisi verdi","'Taşınmaz Ticareti İlan Yetkilendirme' → taşınmaz seç → ofisi vergi no ile bul → süre → onay."],
+    ["İlan metni hazırlandı","Net/brüt m² ikisi de dürüst. Başlık: konum + oda + kat + 1-2 güçlü özellik."],
+    ["Fotoğraflar çekildi, kapak seçildi","Gündüz, ışıklar açık, köşeden, telefon yere paralel. 12-20 kare."],
+    ["İlan yayında, platform kaydı yapıldı","Tarihi not et — doping tazeyken verimli."]
+  ]},
+  { no:"04", title:"Gösterim & Pazarlık", items:[
+    ["Her adaya taşınmaz gösterme belgesi imzalatıldı","Gösterimden ÖNCE, istisnasız. Üstünden atlamanın tek panzehiri."],
+    ["Gelen aramalar kayda geçti","İsim, telefon, hangi ilan, ne istedi — ofisin müşteri havuzu."],
+    ["Teklifler yazılı iletildi, mekik pazarlığı yürütüldü","Alıcıyla satıcıyı erken buluşturma. Fiyat esnekliğini telefonda verme."]
+  ]},
+  { no:"05", title:"Anlaşma", items:[
+    ["Aracılık / kapora sözleşmesi imzalandı","Bedel, ödeme şekli, tapu tarihi, cayma şartları, iki tarafın hizmet bedeli."],
+    ["Cayma şartları yazıldı","Alıcı cayarsa kapora yanar; satıcı cayarsa iki katı iade."],
+    ["Kapora ofis hesabına dekontlu alındı","Asla şahsi hesaba değil."],
+    ["Tapu tarihi belirlendi ve iki tarafa teyit edildi",""]
+  ]},
+  { no:"06", title:"Tapu Hazırlığı", items:[
+    ["Tarafların kimlikleri toplandı",""],
+    ["DASK poliçesi hazır / yenilendi","DASK'sız devir yapılmaz."],
+    ["Belediyeden 'emlak vergisi borcu yoktur' + rayiç yazısı alındı","Borçlu malla satış olmaz."],
+    ["Vesikalık fotoğraflar hazır","Satıcı 1, alıcı 2 — müdürlüğe göre değişir, sor."],
+    ["Takyidat SON KEZ çekildi","Tapudan 1 gün önce. Arada haciz düşmüş olabilir."],
+    ["Web Tapu / Alo 181 randevusu alındı",""],
+    ["Harç hesabı yapıldı, kim ödeyecek sözleşmede yazılı","Bedelin %4'ü (kanunen %2+%2) + döner sermaye ücreti."],
+    ["Bedel tapuda TAM gösterilecek — düşük gösterme reddedildi","Vergi kaçakçılığı + alıcının gelecekteki vergi yükü + ihtilafta delilsizlik."]
+  ]},
+  { no:"07", title:"Tapu Günü", items:[
+    ["Harçlar ve döner sermaye yatırıldı",""],
+    ["Para transferi blokeli düzenlendi","İmza anına kadar kilitli; devirle çözülür. Nakit sayımı bankada."],
+    ["Resmî senet imzalandı, devir tescil edildi","Mülkiyet bu an geçer — öncesindeki hiçbir kâğıt geçirmez."],
+    ["Hizmet bedeli tahsil edildi + FATURA kesildi","Masadan kalkmadan. %2+%2, her birine +%20 KDV."]
+  ]},
+  { no:"08", title:"Teslim", items:[
+    ["Anahtar teslim edildi",""],
+    ["Sayaç ve abonelik devirleri yapıldı","Elektrik, su, doğalgaz — borç sorgusuyla."],
+    ["Site / apartman yönetimine bildirim, aidat sıfırlandı",""],
+    ["Memnuniyet teyidi + referans istendi","Sorunsuz teslim = üç yeni müşteri."]
+  ]}
+];
+
+const phasesEl = document.getElementById('phases');
+let allOpen = false;
+
+// Build DOM
+DATA.forEach((ph, pi) => {
+  const d = document.createElement('div');
+  d.className = 'phase' + (pi === 0 ? ' open' : '');
+  d.innerHTML = `
+    <button class="phase-head" aria-expanded="${pi===0}">
+      <span class="phase-no">${ph.no}</span>
+      <span class="phase-title">${ph.title}</span>
+      <span class="phase-count" data-count></span>
+      <span class="chev" aria-hidden="true"></span>
+    </button>
+    <span class="stamp" aria-hidden="true">Tamamdır</span>
+    <div class="phase-body">
+      ${ph.items.map((it, ii) => `
+        <div class="item">
+          <input type="checkbox" id="c-${pi}-${ii}" data-p="${pi}" data-i="${ii}">
+          <label class="txt" for="c-${pi}-${ii}">
+            <div class="t">${it[0]}</div>
+            ${it[1] ? `<div class="h">${it[1]}</div>` : ''}
+          </label>
+        </div>`).join('')}
+    </div>`;
+  phasesEl.appendChild(d);
+});
+
+// Events
+phasesEl.addEventListener('click', e => {
+  const head = e.target.closest('.phase-head');
+  if (head) {
+    const p = head.parentElement;
+    p.classList.toggle('open');
+    head.setAttribute('aria-expanded', p.classList.contains('open'));
+  }
+});
+phasesEl.addEventListener('change', e => {
+  if (e.target.matches('input[type=checkbox]')) refresh();
+});
+
+function refresh(){
+  const boxes = [...document.querySelectorAll('.item input')];
+  const done = boxes.filter(b => b.checked).length;
+  const pct = boxes.length ? Math.round(done / boxes.length * 100) : 0;
+  document.getElementById('pct').textContent = '%' + pct;
+  document.getElementById('barfill').style.width = pct + '%';
+  document.querySelectorAll('.phase').forEach(p => {
+    const bs = [...p.querySelectorAll('input[type=checkbox]')];
+    const dn = bs.filter(b => b.checked).length;
+    p.querySelector('[data-count]').textContent = dn + '/' + bs.length;
+    p.classList.toggle('done', dn === bs.length && bs.length > 0);
+  });
+}
+
+// State code (export / import) — no browser storage used
+const msg = t => { const m = document.getElementById('msg'); m.textContent = t; setTimeout(()=>{ if(m.textContent===t) m.textContent=''; }, 4000); };
+
+document.getElementById('btn-export').onclick = () => {
+  const state = {
+    f: {}, c: [...document.querySelectorAll('.item input')].map(b => b.checked ? 1 : 0)
+  };
+  document.querySelectorAll('.field input').forEach(i => state.f[i.dataset.k] = i.value);
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  const box = document.getElementById('statebox');
+  box.value = code;
+  box.select();
+  try { document.execCommand('copy'); msg('Kod kopyalandı — not defterine yapıştır.'); }
+  catch(e){ msg('Kod hazır — kutudan elle kopyala.'); }
+};
+
+document.getElementById('btn-import').onclick = () => {
+  const raw = document.getElementById('statebox').value.trim();
+  if (!raw) { msg('Önce kutuya durum kodunu yapıştır.'); return; }
+  try {
+    const state = JSON.parse(decodeURIComponent(escape(atob(raw))));
+    document.querySelectorAll('.field input').forEach(i => { if (state.f && state.f[i.dataset.k] !== undefined) i.value = state.f[i.dataset.k]; });
+    const boxes = [...document.querySelectorAll('.item input')];
+    (state.c || []).forEach((v, i) => { if (boxes[i]) boxes[i].checked = !!v; });
+    refresh();
+    msg('Dosya yüklendi.');
+  } catch(e){ msg('Kod okunamadı — eksik kopyalanmış olabilir.'); }
+};
+
+document.getElementById('btn-openall').onclick = () => {
+  allOpen = !allOpen;
+  document.querySelectorAll('.phase').forEach(p => {
+    p.classList.toggle('open', allOpen);
+    p.querySelector('.phase-head').setAttribute('aria-expanded', allOpen);
+  });
+};
+
+document.getElementById('btn-reset').onclick = () => {
+  if (!confirm('Tüm işaretler ve dosya bilgileri silinecek. Emin misin?')) return;
+  document.querySelectorAll('.item input').forEach(b => b.checked = false);
+  document.querySelectorAll('.field input').forEach(i => i.value = '');
+  document.getElementById('statebox').value = '';
+  refresh();
+  msg('Dosya sıfırlandı.');
+};
+
+refresh();
+</script>
+</body>
+</html>
