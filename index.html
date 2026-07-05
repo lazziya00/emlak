@@ -26,7 +26,19 @@
   }
   .dnav button.on{color:#fff;border-color:var(--bordo);background:var(--bordo-deep)}
   .dnav button:hover{border-color:var(--bordo);color:var(--ink)}
-  .dnav button:focus-visible,.phase-head:focus-visible{outline:2px solid var(--bordo);outline-offset:-2px}
+  .dnav button:focus-visible,.phase-head:focus-visible,.fnav button:focus-visible{outline:2px solid var(--bordo);outline-offset:-2px}
+
+  /* PORTFOY DOSYALARI */
+  .fnav{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .fnav button{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;
+    color:var(--ink-dim);border:1px dashed var(--line);border-radius:99px;
+    padding:6px 13px;background:transparent;cursor:pointer;max-width:180px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .fnav button.on{color:var(--ink);border:1px solid var(--bordo);background:var(--panel)}
+  .fnav button:hover{border-color:var(--bordo)}
+  .fnav button.newf{color:var(--done);border-color:rgba(95,174,127,.5)}\n  .fnav button.delchip{color:var(--bordo);border:1px solid var(--bordo-deep);min-width:34px}
 
   /* KAPAK */
   .cover{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--bordo);border-radius:6px;padding:26px 24px 22px}
@@ -86,13 +98,54 @@
   .tools textarea:focus{outline:2px solid var(--bordo);outline-offset:1px}
   .msg{font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:8px;color:var(--done);min-height:16px}
 
+  /* MUSTERI HAVUZU */
+  .mform{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--bordo);border-radius:6px;padding:22px 20px}
+  .mform h2{font-family:'IBM Plex Serif',serif;font-weight:600;font-size:20px;margin-bottom:4px}
+  .mform .sub{font-family:'IBM Plex Serif',serif;font-style:italic;color:var(--ink-dim);font-size:13px;margin-bottom:16px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}
+  @media(max-width:560px){.mgrid{grid-template-columns:1fr}}
+  .mgrid .full{grid-column:1/-1}
+  .mform select, .mform textarea{
+    width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:4px;
+    color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:8px 10px;
+  }
+  .mform textarea{min-height:56px;resize:vertical}
+  .mform select:focus,.mform textarea:focus{outline:2px solid var(--bordo);outline-offset:1px}
+  .mform .btnrow{margin-top:14px}
+  .msearchwrap{margin:18px 0 12px}
+  .msearchwrap input{
+    width:100%;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:11px 14px;
+  }
+  .msearchwrap input:focus{outline:2px solid var(--bordo);outline-offset:1px}
+  .mcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:10px}
+  .mcard .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .mcard .ad{font-family:'IBM Plex Serif',serif;font-weight:600;font-size:16px}
+  .mcard .dot{width:9px;height:9px;border-radius:99px;display:inline-block;flex-shrink:0}
+  .dot.sicak{background:#d1564a}.dot.ilik{background:#d9a23f}.dot.soguk{background:#5f87ae}
+  .mcard .tel a{color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:13px;text-decoration:none;border-bottom:1px dotted var(--label)}
+  .mcard .meta{font-size:12.5px;color:var(--ink-dim);margin-top:5px;line-height:1.6}
+  .mcard .meta b{color:var(--ink);font-weight:500}
+  .mcard .not{font-size:12.5px;color:var(--ink-dim);margin-top:4px;font-style:italic}
+  .mcard .acts{display:flex;gap:8px;margin-top:10px}
+  .mcard .acts button{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;
+    background:var(--panel2);color:var(--ink-dim);border:1px solid var(--line);border-radius:4px;
+    padding:5px 12px;cursor:pointer;
+  }
+  .mcard .acts button:hover{border-color:var(--bordo);color:var(--ink)}
+  .mcard .tarih{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--label);margin-left:auto}
+  .mempty{text-align:center;color:var(--label);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:30px 0;letter-spacing:.08em}
+
   footer{margin-top:26px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--label)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <nav class="dnav" id="dnav" aria-label="Dosya seçimi"></nav>
+  <nav class="dnav" id="dnav" aria-label="Kategori seçimi"></nav>
+
+  <nav class="fnav" id="fnav" aria-label="Portföy dosyaları"></nav>
 
   <div class="cover">
     <div class="eyebrow" id="cv-eyebrow"></div>
@@ -108,6 +161,38 @@
 
   <div id="phases"></div>
 
+  <div id="musteriPanel" style="display:none">
+    <div class="mform">
+      <h2 id="mform-title">Yeni Müşteri Kaydı</h2>
+      <div class="sub">Arayan, gezen, tanışılan herkes havuza — bugün almayan, yarın alır.</div>
+      <div class="mgrid">
+        <div class="field"><label for="m-ad">Ad Soyad</label><input id="m-ad" placeholder="Ad Soyad"></div>
+        <div class="field"><label for="m-tel">Telefon</label><input id="m-tel" placeholder="05xx xxx xx xx" inputmode="tel"></div>
+        <div class="field"><label for="m-tip">Tip</label>
+          <select id="m-tip">
+            <option>Alıcı</option><option>Kiracı adayı</option><option>Mülk sahibi</option><option>Yatırımcı</option><option>Gezici</option>
+          </select></div>
+        <div class="field"><label for="m-sicak">Sıcaklık</label>
+          <select id="m-sicak">
+            <option value="sicak">Sıcak — hazır, ciddi</option><option value="ilik" selected>Ilık — ilgili, bekliyor</option><option value="soguk">Soğuk — uzak ihtimal</option>
+          </select></div>
+        <div class="field"><label for="m-talep">Talep</label><input id="m-talep" placeholder="örn. 3+1, İncek, güney cephe"></div>
+        <div class="field"><label for="m-butce">Bütçe</label><input id="m-butce" placeholder="₺ / kredi durumu"></div>
+        <div class="field full"><label for="m-kaynak">Kaynak</label><input id="m-kaynak" placeholder="Hangi ilan / telefon / gösterim / tavsiye"></div>
+        <div class="field full"><label for="m-not">Not</label><textarea id="m-not" placeholder="Ne konuşuldu, neye takıldı, ne zaman aranacak..."></textarea></div>
+      </div>
+      <div class="btnrow">
+        <button class="act" id="btn-msave">Havuza Kaydet</button>
+        <button class="act" id="btn-mcancel" style="display:none">Vazgeç</button>
+      </div>
+      <div class="msg" id="mmsg"></div>
+    </div>
+    <div class="msearchwrap">
+      <input id="m-search" placeholder="Havuzda ara — isim, telefon, talep, not...">
+    </div>
+    <div id="mlist"></div>
+  </div>
+
   <div class="tools">
     <h2>Dosya Araçları</h2>
     <p>İşaretlerin bu cihazın tarayıcısına <strong>otomatik kaydedilir</strong> — sayfayı yenilesen de kapatsan da kaybolmaz. Başka bir cihaza (telefon → bilgisayar) taşımak ya da yedek almak için <strong>Durum Kodu Al</strong> ile kodu kopyala; öbür cihazda <strong>Kodu Yükle</strong> de. Not: kayıt yalnızca yayınlanmış sitede çalışır, önizlemede değil.</p>
@@ -116,6 +201,7 @@
       <button class="act" id="btn-import">Kodu Yükle</button>
       <button class="act" id="btn-openall">Tümünü Aç / Kapat</button>
       <button class="act danger" id="btn-reset">Bu Dosyayı Sıfırla</button>
+      <button class="act danger" id="btn-delfile">Bu Dosyayı Sil</button>
     </div>
     <textarea id="statebox" placeholder="Durum kodu burada görünür / buraya yapıştırılır" aria-label="Durum kodu"></textarea>
     <div class="msg" id="msg"></div>
@@ -125,6 +211,11 @@
 </div>
 
 <script>
+/* Önizleme sandbox'ının detaysız "Script error." gürültüsünü sustur (gerçek hatalar etkilenmez) */
+window.addEventListener('error', e => {
+  if (e.message === 'Script error.' && !e.filename) e.preventDefault();
+});
+
 /* ================= DOSYA TANIMLARI ================= */
 const DOSSIERS = {
 
@@ -333,69 +424,145 @@ const DOSSIERS = {
 };
 
 /* ================= DURUM ================= */
-const state = {};
-Object.keys(DOSSIERS).forEach(k => {
-  state[k] = {
+function newFile(k){
+  return {
     f: {},
     c: DOSSIERS[k].phases.map(p => p.items.map(() => 0)),
     open: DOSSIERS[k].phases.map((_, i) => i === 0)
   };
-});
+}
+const state = {};
+Object.keys(DOSSIERS).forEach(k => { state[k] = { files: [newFile(k)], active: 0 }; });
+state.musteri = [];
 let cur = 'pesin';
 let allOpen = false;
+
+function curFile(){ return state[cur].files[state[cur].active]; }
+function fixShape(k, file){
+  const fixed = newFile(k);
+  fixed.f = file.f || {};
+  DOSSIERS[k].phases.forEach((ph, pi) => ph.items.forEach((_, ii) => {
+    fixed.c[pi][ii] = (file.c && file.c[pi] && file.c[pi][ii]) ? 1 : 0;
+  }));
+  if (Array.isArray(file.open)) DOSSIERS[k].phases.forEach((_, i) => { if (typeof file.open[i] === 'boolean') fixed.open[i] = file.open[i]; });
+  return fixed;
+}
+function loadInto(obj){
+  if (Array.isArray(obj.musteri)) state.musteri = obj.musteri.filter(m => m && (m.ad || m.tel));
+  Object.keys(DOSSIERS).forEach(k => {
+    const src = obj[k];
+    if (!src) return;
+    let files;
+    if (Array.isArray(src.files) && src.files.length) files = src.files;      // yeni format
+    else if (src.f || src.c) files = [src];                                    // eski format: tek dosya
+    else return;
+    state[k].files = files.map(f => fixShape(k, f));
+    state[k].active = Math.min(src.active || 0, state[k].files.length - 1);
+  });
+}
 
 /* ================= KALICI KAYIT ================= */
 const STORE_KEY = 'sahakiti-dosyalar';
 function persist(){
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ state, cur })); } catch(e){}
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ v: 2, state, cur })); } catch(e){}
 }
 function restore(){
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    if (saved.cur && DOSSIERS[saved.cur]) cur = saved.cur;
-    Object.keys(DOSSIERS).forEach(k => {
-      if (!saved.state || !saved.state[k]) return;
-      state[k].f = saved.state[k].f || {};
-      DOSSIERS[k].phases.forEach((ph, pi) => ph.items.forEach((_, ii) => {
-        state[k].c[pi][ii] = (saved.state[k].c && saved.state[k].c[pi] && saved.state[k].c[pi][ii]) ? 1 : 0;
-      }));
-      if (saved.state[k].open) state[k].open = saved.state[k].open;
-    });
+    if (saved.cur && (DOSSIERS[saved.cur] || saved.cur === 'musteri')) cur = saved.cur;
+    if (saved.state) loadInto(saved.state);
   } catch(e){}
 }
 restore();
 
 /* ================= RENDER ================= */
 const dnav = document.getElementById('dnav');
+const fnav = document.getElementById('fnav');
 Object.keys(DOSSIERS).forEach(k => {
   const b = document.createElement('button');
   b.textContent = DOSSIERS[k].tab;
   b.dataset.d = k;
-  b.onclick = () => { saveOpenStates(); cur = k; persist(); render(); };
+  b.onclick = () => { cur = k; persist(); render(); };
   dnav.appendChild(b);
 });
+{
+  const b = document.createElement('button');
+  b.textContent = 'Müşteri Havuzu';
+  b.dataset.d = 'musteri';
+  b.onclick = () => { cur = 'musteri'; persist(); render(); };
+  dnav.appendChild(b);
+}
 
-function saveOpenStates(){
-  document.querySelectorAll('.phase').forEach((p, i) => state[cur].open[i] = p.classList.contains('open'));
-  document.querySelectorAll('.field input').forEach(i => state[cur].f[i.dataset.k] = i.value);
+function fileLabel(file, i){
+  return (file.f.portfoy || file.f.malik || file.f.kiraci || ('Dosya ' + (i + 1))).slice(0, 24);
+}
+
+function renderFnav(){
+  fnav.innerHTML = '';
+  state[cur].files.forEach((file, i) => {
+    const b = document.createElement('button');
+    b.textContent = fileLabel(file, i);
+    b.classList.toggle('on', i === state[cur].active);
+    b.title = 'Bu portföy dosyasına geç';
+    b.onclick = () => { state[cur].active = i; persist(); render(); };
+    fnav.appendChild(b);
+    if (i === state[cur].active) {
+      const x = document.createElement('button');
+      x.className = 'delchip';
+      x.textContent = '×';
+      x.title = 'Bu dosyayı sil (iki dokunuş)';
+      x.onclick = () => {
+        if (x.dataset.armed === '1') { deleteFile(i); }
+        else {
+          x.dataset.armed = '1'; x.textContent = 'Sil?';
+          setTimeout(() => { if (x.dataset.armed === '1'){ x.dataset.armed=''; x.textContent='×'; } }, 3000);
+        }
+      };
+      fnav.appendChild(x);
+    }
+  });
+  const plus = document.createElement('button');
+  plus.textContent = '+ Yeni Dosya';
+  plus.className = 'newf';
+  plus.onclick = () => {
+    state[cur].files.push(newFile(cur));
+    state[cur].active = state[cur].files.length - 1;
+    persist(); render();
+    msg('Yeni dosya açıldı — kapak bilgilerini doldur.');
+  };
+  fnav.appendChild(plus);
+}
+
+function setDossierVisible(v){
+  ['fnav'].forEach(id => document.getElementById(id).style.display = v ? 'flex' : 'none');
+  document.querySelector('.cover').style.display = v ? 'block' : 'none';
+  document.querySelector('.progress').style.display = v ? 'block' : 'none';
+  document.getElementById('phases').style.display = v ? 'block' : 'none';
+  document.getElementById('musteriPanel').style.display = v ? 'none' : 'block';
+  document.getElementById('btn-reset').style.display = v ? '' : 'none';
+  document.getElementById('btn-delfile').style.display = v ? '' : 'none';
+  document.getElementById('btn-openall').style.display = v ? '' : 'none';
 }
 
 function render(){
-  const D = DOSSIERS[cur], S = state[cur];
   dnav.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.d === cur));
-  document.getElementById('cv-eyebrow').textContent = D.eyebrow;
+  if (cur === 'musteri') { setDossierVisible(false); renderMusteri(); return; }
+  setDossierVisible(true);
+  const D = DOSSIERS[cur], F = curFile();
+  renderFnav();
+  document.getElementById('cv-eyebrow').textContent = D.eyebrow + ' / ' + (state[cur].active + 1);
   document.getElementById('cv-title').textContent = D.title;
   document.getElementById('cv-sub').textContent = D.sub;
 
   document.getElementById('cv-fields').innerHTML = D.fields.map(([k, lab, ph]) => `
     <div class="field"><label for="f-${k}">${lab}</label>
-    <input id="f-${k}" data-k="${k}" placeholder="${ph}" value="${(S.f[k]||'').replace(/"/g,'&quot;')}"></div>`).join('');
+    <input id="f-${k}" data-k="${k}" placeholder="${ph}" value="${(F.f[k]||'').replace(/"/g,'&quot;')}"></div>`).join('');
 
   document.getElementById('phases').innerHTML = D.phases.map((ph, pi) => `
-    <div class="phase${S.open[pi] ? ' open' : ''}">
-      <button class="phase-head" aria-expanded="${!!S.open[pi]}">
+    <div class="phase${F.open[pi] ? ' open' : ''}">
+      <button class="phase-head" aria-expanded="${!!F.open[pi]}">
         <span class="phase-no">${ph.no}</span>
         <span class="phase-title">${ph.title}</span>
         <span class="phase-count" data-count></span>
@@ -405,7 +572,7 @@ function render(){
       <div class="phase-body">
         ${ph.items.map((it, ii) => `
           <div class="item">
-            <input type="checkbox" id="c-${pi}-${ii}" data-p="${pi}" data-i="${ii}" ${S.c[pi][ii] ? 'checked' : ''}>
+            <input type="checkbox" id="c-${pi}-${ii}" data-p="${pi}" data-i="${ii}" ${F.c[pi][ii] ? 'checked' : ''}>
             <label class="txt" for="c-${pi}-${ii}">
               <div class="t">${it[0]}</div>
               ${it[1] ? `<div class="h">${it[1]}</div>` : ''}
@@ -423,18 +590,26 @@ document.getElementById('phases').addEventListener('click', e => {
     const p = head.parentElement;
     p.classList.toggle('open');
     head.setAttribute('aria-expanded', p.classList.contains('open'));
-    saveOpenStates(); persist();
+    [...document.querySelectorAll('.phase')].forEach((ph, i) => curFile().open[i] = ph.classList.contains('open'));
+    persist();
   }
 });
 document.getElementById('phases').addEventListener('change', e => {
   if (e.target.matches('input[type=checkbox]')) {
-    state[cur].c[+e.target.dataset.p][+e.target.dataset.i] = e.target.checked ? 1 : 0;
+    curFile().c[+e.target.dataset.p][+e.target.dataset.i] = e.target.checked ? 1 : 0;
     persist();
     refresh();
   }
 });
 document.body.addEventListener('input', e => {
-  if (e.target.matches('.field input')) { state[cur].f[e.target.dataset.k] = e.target.value; persist(); }
+  if (e.target.matches('.field input')) {
+    curFile().f[e.target.dataset.k] = e.target.value;
+    // dosya çipinin etiketini canlı güncelle
+    const chips = fnav.querySelectorAll('button:not(.newf)');
+    const i = state[cur].active;
+    if (chips[i]) chips[i].textContent = fileLabel(curFile(), i);
+    persist();
+  }
 });
 
 function refresh(){
@@ -451,15 +626,125 @@ function refresh(){
   });
 }
 
+/* ================= MUSTERI HAVUZU ================= */
+let editId = null;
+const mmsg = t => { const m = document.getElementById('mmsg'); m.textContent = t; setTimeout(() => { if (m.textContent === t) m.textContent = ''; }, 4000); };
+const SICAK_AD = { sicak: 'Sıcak', ilik: 'Ilık', soguk: 'Soğuk' };
+
+function mFormRead(){
+  return {
+    ad: document.getElementById('m-ad').value.trim(),
+    tel: document.getElementById('m-tel').value.trim(),
+    tip: document.getElementById('m-tip').value,
+    sicak: document.getElementById('m-sicak').value,
+    talep: document.getElementById('m-talep').value.trim(),
+    butce: document.getElementById('m-butce').value.trim(),
+    kaynak: document.getElementById('m-kaynak').value.trim(),
+    not: document.getElementById('m-not').value.trim()
+  };
+}
+function mFormWrite(m){
+  document.getElementById('m-ad').value = m.ad || '';
+  document.getElementById('m-tel').value = m.tel || '';
+  document.getElementById('m-tip').value = m.tip || 'Alıcı';
+  document.getElementById('m-sicak').value = m.sicak || 'ilik';
+  document.getElementById('m-talep').value = m.talep || '';
+  document.getElementById('m-butce').value = m.butce || '';
+  document.getElementById('m-kaynak').value = m.kaynak || '';
+  document.getElementById('m-not').value = m.not || '';
+}
+function mFormClear(){
+  mFormWrite({});
+  editId = null;
+  document.getElementById('mform-title').textContent = 'Yeni Müşteri Kaydı';
+  document.getElementById('btn-msave').textContent = 'Havuza Kaydet';
+  document.getElementById('btn-mcancel').style.display = 'none';
+}
+
+document.getElementById('btn-msave').onclick = () => {
+  const m = mFormRead();
+  if (!m.ad && !m.tel) { mmsg('En azından isim ya da telefon gir.'); return; }
+  if (editId !== null) {
+    const i = state.musteri.findIndex(x => x.id === editId);
+    if (i > -1) state.musteri[i] = Object.assign({}, state.musteri[i], m);
+    mmsg('Kayıt güncellendi.');
+  } else {
+    m.id = Date.now();
+    m.tarih = new Date().toLocaleDateString('tr-TR');
+    state.musteri.unshift(m);
+    mmsg('Havuza eklendi.');
+  }
+  mFormClear();
+  persist();
+  renderMusteri();
+};
+document.getElementById('btn-mcancel').onclick = () => mFormClear();
+document.getElementById('m-search').oninput = () => renderMusteri();
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderMusteri(){
+  const q = (document.getElementById('m-search').value || '').toLocaleLowerCase('tr');
+  const list = state.musteri.filter(m => {
+    if (!q) return true;
+    return [m.ad, m.tel, m.tip, m.talep, m.butce, m.kaynak, m.not].join(' ').toLocaleLowerCase('tr').includes(q);
+  });
+  const box = document.getElementById('mlist');
+  if (!list.length) {
+    box.innerHTML = '<div class="mempty">' + (state.musteri.length ? 'ARAMAYLA EŞLEŞEN KAYIT YOK' : 'HAVUZ BOŞ — İLK KAYDI EKLE') + '</div>';
+    return;
+  }
+  box.innerHTML = list.map(m => `
+    <div class="mcard" data-id="${m.id}">
+      <div class="top">
+        <span class="dot ${m.sicak || 'ilik'}" title="${SICAK_AD[m.sicak] || 'Ilık'}"></span>
+        <span class="ad">${esc(m.ad) || '—'}</span>
+        <span class="tel">${m.tel ? '<a href="tel:' + esc(m.tel.replace(/\s/g,'')) + '">' + esc(m.tel) + '</a>' : ''}</span>
+        <span class="tarih">${esc(m.tarih || '')}</span>
+      </div>
+      <div class="meta"><b>${esc(m.tip || '')}</b>${m.talep ? ' · ' + esc(m.talep) : ''}${m.butce ? ' · <b>' + esc(m.butce) + '</b>' : ''}${m.kaynak ? ' · kaynak: ' + esc(m.kaynak) : ''}</div>
+      ${m.not ? '<div class="not">' + esc(m.not) + '</div>' : ''}
+      <div class="acts">
+        <button data-act="edit">Düzenle</button>
+        <button data-act="del">×</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('mlist').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const id = +btn.closest('.mcard').dataset.id;
+  if (btn.dataset.act === 'edit') {
+    const m = state.musteri.find(x => x.id === id);
+    if (!m) return;
+    mFormWrite(m);
+    editId = id;
+    document.getElementById('mform-title').textContent = 'Kaydı Düzenle — ' + (m.ad || m.tel);
+    document.getElementById('btn-msave').textContent = 'Güncelle';
+    document.getElementById('btn-mcancel').style.display = '';
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) { window.scrollTo(0,0); }
+  } else if (btn.dataset.act === 'del') {
+    if (btn.dataset.armed === '1') {
+      state.musteri = state.musteri.filter(x => x.id !== id);
+      persist();
+      renderMusteri();
+    } else {
+      btn.dataset.armed = '1';
+      btn.textContent = 'Sil?';
+      setTimeout(() => { if (btn.dataset.armed === '1'){ btn.dataset.armed=''; btn.textContent='×'; } }, 3000);
+    }
+  }
+});
+
 /* ================= ARACLAR ================= */
 const msg = t => { const m = document.getElementById('msg'); m.textContent = t; setTimeout(() => { if (m.textContent === t) m.textContent = ''; }, 4000); };
 
 document.getElementById('btn-export').onclick = () => {
-  saveOpenStates();
   const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
   const box = document.getElementById('statebox');
   box.value = code; box.select();
-  try { document.execCommand('copy'); msg('Kod kopyalandı — not defterine yapıştır. (İki dosya birlikte)'); }
+  try { document.execCommand('copy'); msg('Kod kopyalandı — tüm kategoriler ve dosyalar dahil.'); }
   catch(e){ msg('Kod hazır — kutudan elle kopyala.'); }
 };
 
@@ -468,14 +753,8 @@ document.getElementById('btn-import').onclick = () => {
   if (!raw) { msg('Önce kutuya durum kodunu yapıştır.'); return; }
   try {
     const loaded = JSON.parse(decodeURIComponent(escape(atob(raw))));
-    Object.keys(DOSSIERS).forEach(k => {
-      if (!loaded[k]) return;
-      state[k].f = loaded[k].f || {};
-      DOSSIERS[k].phases.forEach((ph, pi) => ph.items.forEach((_, ii) => {
-        state[k].c[pi][ii] = (loaded[k].c && loaded[k].c[pi] && loaded[k].c[pi][ii]) ? 1 : 0;
-      }));
-      if (loaded[k].open) state[k].open = loaded[k].open;
-    });
+    loadInto(loaded);
+    Object.keys(DOSSIERS).forEach(k => { if (!state[k].files.length) state[k] = { files:[newFile(k)], active:0 }; });
     render();
     persist();
     msg('Dosyalar yüklendi.');
@@ -488,18 +767,42 @@ document.getElementById('btn-openall').onclick = () => {
     p.classList.toggle('open', allOpen);
     p.querySelector('.phase-head').setAttribute('aria-expanded', allOpen);
   });
+  [...document.querySelectorAll('.phase')].forEach((ph, i) => curFile().open[i] = ph.classList.contains('open'));
+  persist();
 };
 
-document.getElementById('btn-reset').onclick = () => {
-  if (!confirm('Bu dosyanın (' + DOSSIERS[cur].tab + ') tüm işaretleri ve bilgileri silinecek. Emin misin?')) return;
-  const S = state[cur];
-  S.f = {};
-  S.c = DOSSIERS[cur].phases.map(p => p.items.map(() => 0));
-  S.open = DOSSIERS[cur].phases.map((_, i) => i === 0);
+/* İki dokunuşlu onay — tarayıcı diyaloğu (confirm) bazı ortamlarda engellendiği için */
+function twoTap(btn, label, action){
+  btn.onclick = () => {
+    if (btn.dataset.armed === '1') {
+      btn.dataset.armed = '';
+      btn.textContent = label;
+      action();
+    } else {
+      btn.dataset.armed = '1';
+      btn.textContent = 'Emin misin? Tekrar bas';
+      setTimeout(() => { if (btn.dataset.armed === '1') { btn.dataset.armed=''; btn.textContent = label; } }, 3000);
+    }
+  };
+}
+
+function deleteFile(i){
+  state[cur].files.splice(i, 1);
+  if (!state[cur].files.length) state[cur].files.push(newFile(cur));
+  state[cur].active = Math.min(Math.max(0, i - 1), state[cur].files.length - 1);
+  render();
+  persist();
+  msg('Dosya silindi.');
+}
+
+twoTap(document.getElementById('btn-reset'), 'Bu Dosyayı Sıfırla', () => {
+  state[cur].files[state[cur].active] = newFile(cur);
   render();
   persist();
   msg('Dosya sıfırlandı.');
-};
+});
+
+twoTap(document.getElementById('btn-delfile'), 'Bu Dosyayı Sil', () => deleteFile(state[cur].active));
 
 render();
 </script>
